@@ -14,6 +14,13 @@ def convert(src):
     t = re.search(r"<title>(.*?)</title>", src, re.S)
     return TPL.replace("/*Q*/", m.group(0).rstrip()).replace("/*TITLE*/", t.group(1) if t else "GATE Test")
 
+def caption(cap, out):
+    if cap:
+        return cap.replace("#", "")[:1024]
+    t = re.search(r"<title>(.*?)</title>", out, re.S).group(1).strip()
+    n = out.count('"sr_no"')
+    return f"✨ {t} ✨\n\nOPEN IN YOUR BROWSER🌐  BEST IN CHROME\nQUESTIONS: {n}\nTIME: {180 if n == 65 else n * 3} MINUTES ⏱️"
+
 
 @st.cache_resource
 def start_bot():
@@ -41,7 +48,7 @@ def start_bot():
             return
         f = io.BytesIO(out.encode("utf8"))
         f.name = re.sub(r"\.html?$", "", fn, flags=re.I) + "_GATE.html"
-        bot.send_document(m.chat.id, f)
+        bot.send_document(m.chat.id, f, caption=caption(m.caption, out))
 
     import threading
     threading.Thread(target=lambda: bot.infinity_polling(skip_pending=True), daemon=True).start()
