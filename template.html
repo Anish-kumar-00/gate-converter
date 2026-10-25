@@ -29,12 +29,16 @@ table{border-collapse:collapse;width:100%;margin:10px 0}td,th{border:1px solid #
 .rv{background:#fff;border:1px solid #ccc;border-radius:8px;padding:12px;margin:10px 0}.ok{background:#d4edda;border-color:#2e9e4f}.no{background:#f8d7da;border-color:#c33}
 .wrap{max-width:900px;margin:0 auto;padding:12px}.sc{background:#2a5d9f;color:#fff;border-radius:10px;padding:20px;text-align:center}
 @media(max-width:800px){#mob,#bx{display:block}#pal{position:fixed;right:0;top:0;bottom:0;z-index:10;transform:translateX(100%);transition:.2s}#pal.open{transform:none}}
+body.dk{background:#12151c;color:#e6e6e6}.dk #qa,.dk .rv,.dk .bx,.dk .secs{background:#1b1f29}.dk .qh,.dk .ft{background:#232834;border-color:#3a4150}
+.dk .op{border-color:#3a4150}.dk .op.s{background:#1f3556}.dk #pal{background:#1a2233;border-color:#3a4150}.dk .hdg{background:#232834}.dk .lg,.dk td,.dk th{border-color:#444}
+.dk button:not(.pr):not(.mr):not(.gr):not(.b):not(.on){background:#2a303d;color:#eee;border-color:#444}.dk .secs button{background:#1b1f29;color:#ddd}.dk .secs .on{background:#2a5d9f;color:#fff}
+.dk input{background:#232834;color:#eee}.dk .ok{background:#16351f}.dk .no{background:#3b1a1f}.dk img{background:#fff;border-radius:4px}
 </style></head><body>
-<div id="start" class="wrap"><div class="rv"><h2 id="t0"></h2><h3 style="margin-top:10px">Instructions</h3><div id="ins"></div>
+<div id="start" class="wrap"><div class="rv"><button class="dkb" style="float:right">🌙 Dark</button><h2 id="t0"></h2><h3 style="margin-top:10px">Instructions</h3><div id="ins"></div>
 <label style="display:block;margin:12px 0"><input type="checkbox" id="agree"> I have read and understood the instructions.</label>
 <button class="pr" id="go" disabled>I am ready to begin</button></div></div>
 <div id="app" hidden>
-<div class="hd"><b id="ttl"></b><span>Candidate: <b>Student</b></span><span class="tm" id="tm">03:00:00</span><button id="mob">☰ Palette</button></div>
+<div class="hd"><b id="ttl"></b><span>Candidate: <b>Student</b></span><span class="tm" id="tm">03:00:00</span><button class="dkb">🌙 Dark</button><button id="mob">☰ Palette</button></div>
 <nav class="secs" id="secs"></nav>
 <main><section id="qa"><div class="qh"><b id="qn"></b><span id="qi"></span></div><div id="qb"></div>
 <div class="ft"><button id="bm" class="mr">Mark for Review &amp; Next</button><button id="bc">Clear Response</button><button id="bp">&lt; Previous</button><button id="bs" class="gr">Save &amp; Next</button></div></section>
@@ -103,5 +107,8 @@ else for(let k=1;k<=4;k++)h+=`<div class="op ${k==q.answer?'ok':a==k?'no':''}" s
 if((q.solution_text||'').trim())h+=`<details open><summary><b>Solution</b></summary>${img(q.solution_text)}</details>`;return h+'</div>'}).join('');
 $('res').innerHTML=`<div class="sc"><h1>${+sc.toFixed(2)} / ${TOT}</h1>${G?`<p>${SEC[0]}: ${+ss[0].toFixed(2)} | ${SEC[1]}: ${+ss[1].toFixed(2)}</p>`:''}<p>Correct ${ok} · Wrong ${bad} · Not attempted ${sk}</p></div><p style="margin:10px 0"><button class="pr" onclick="if(confirm('Restart the exam?'))location.reload()">Restart</button> <button onclick="print()">Print</button></p>`+rows}
 $('t0').textContent=T;$('ins').innerHTML=INS;$('agree').onchange=e=>$('go').disabled=!e.target.checked;$('go').onclick=()=>begin(false);
+const dkSet=on=>{document.body.classList.toggle('dk',on);try{localStorage.setItem('gate_dk',on?1:0)}catch(e){}};
+document.querySelectorAll('.dkb').forEach(b=>b.onclick=()=>dkSet(!document.body.classList.contains('dk')));
+try{if(localStorage.getItem('gate_dk')==='1')document.body.classList.add('dk')}catch(e){}
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.end>Date.now()){S=s;begin(true)}}catch(e){}
 </script></body></html>
