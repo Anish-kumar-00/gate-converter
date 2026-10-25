@@ -33,6 +33,7 @@ body.dk{background:#12151c;color:#e6e6e6}.dk #qa,.dk .rv,.dk .bx,.dk .secs{backg
 .dk .op{border-color:#3a4150}.dk .op.s{background:#1f3556}.dk #pal{background:#1a2233;border-color:#3a4150}.dk .hdg{background:#232834}.dk .lg,.dk td,.dk th{border-color:#444}
 .dk button:not(.pr):not(.mr):not(.gr):not(.b):not(.on){background:#2a303d;color:#eee;border-color:#444}.dk .secs button{background:#1b1f29;color:#ddd}.dk .secs .on{background:#2a5d9f;color:#fff}
 .dk input{background:#232834;color:#eee}.dk .ok{background:#16351f}.dk .no{background:#3b1a1f}.dk img{background:#fff;border-radius:4px}
+#pp{display:none}body.pp{background:#fff;color:#000}body.pp>*:not(#pp){display:none!important}body.pp #pp{display:block;padding:10px}.pq{break-inside:avoid;margin:12px 0;padding-bottom:8px;border-bottom:1px solid #999}.po{margin:6px 0;display:flex;gap:8px;align-items:flex-start}
 </style></head><body>
 <div id="start" class="wrap"><div class="rv"><button class="dkb" style="float:right">🌙 Dark</button><h2 id="t0"></h2><h3 style="margin-top:10px">Instructions</h3><div id="ins"></div>
 <label style="display:block;margin:12px 0"><input type="checkbox" id="agree"> I have read and understood the instructions.</label>
@@ -43,9 +44,10 @@ body.dk{background:#12151c;color:#e6e6e6}.dk #qa,.dk .rv,.dk .bx,.dk .secs{backg
 <main><section id="qa"><div class="qh"><b id="qn"></b><span id="qi"></span></div><div id="qb"></div>
 <div class="ft"><button id="bm" class="mr">Mark for Review &amp; Next</button><button id="bc">Clear Response</button><button id="bp">&lt; Previous</button><button id="bs" class="gr">Save &amp; Next</button></div></section>
 <aside id="pal"><div class="lg" id="lg"></div><b id="sn"></b><div class="gd" id="gd"></div>
-<div style="display:flex;gap:6px;flex-wrap:wrap"><button id="bq">Question Paper</button><button id="bk">Calculator</button><button id="bi">Instructions</button><button id="bsub" class="pr">Submit</button><button id="bx">Close</button></div></aside></main></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><button id="bq">Question Paper</button><button id="bpdf">Download PDF</button><button id="bk">Calculator</button><button id="bi">Instructions</button><button id="bsub" class="pr">Submit</button><button id="bx">Close</button></div></aside></main></div>
 <div id="md" class="md" hidden><div class="bx" id="bxc"></div></div>
 <div id="res" class="wrap" hidden></div>
+<div id="pp"></div>
 <script>
 /*Q*/
 const $=i=>document.getElementById(i),T=document.title,KEY='gate_'+T,G=questions.length===65,SEC=G?['General Aptitude','Computer Science & IT']:['All Questions'];
@@ -89,8 +91,11 @@ $('qb').onclick=e=>{const o=e.target.closest('.op'),k=e.target.dataset.k;
 if(o){sel=o.dataset.o;document.querySelectorAll('.op').forEach(x=>x.classList.toggle('s',x===o));o.querySelector('input').checked=true}
 else if(k!==undefined&&Q[S.cur].nat){if(k==='⌫')sel=sel.slice(0,-1);else if(k==='C')sel='';else if(k==='-'){sel=sel[0]==='-'?sel.slice(1):'-'+sel}else if(k!=='.'||!sel.includes('.'))sel+=k;$('nat').value=sel}};
 function mod(h,w){$('bxc').className='bx'+(w?' w':'');$('bxc').innerHTML=h+'<p style="margin-top:12px"><button onclick="$(\'md\').hidden=true">Close</button></p>';$('md').hidden=false}
-$('bq').onclick=()=>{mod('<h3>Question Paper</h3>'+Q.map(q=>(q.i==0||(G&&q.i==10)?`<h3 style="background:#2a5d9f;color:#fff;padding:6px">${SEC[q.sec]}</h3>`:'')+`<div class="rv"><b>Q${q.i+1}</b> (${q.nat?'NAT':'MCQ'}, ${q.m} mark, Negative: ${q.nt}) <button data-g="${q.i}">Go to question</button><div style="margin:8px 0">${img(q.question)}</div>`+(q.nat?'':[1,2,3,4].map(k=>`<div class="op" style="cursor:default"><b>(${L[k-1]})</b><div>${img(q['option'+k])}</div></div>`).join(''))+'</div>').join(''),1);
+$('bq').onclick=()=>{mod('<h3>Question Paper</h3><button class="pr" onclick="pdf()">⬇ Download PDF</button>'+Q.map(q=>(q.i==0||(G&&q.i==10)?`<h3 style="background:#2a5d9f;color:#fff;padding:6px">${SEC[q.sec]}</h3>`:'')+`<div class="rv"><b>Q${q.i+1}</b> (${q.nat?'NAT':'MCQ'}, ${q.m} mark, Negative: ${q.nt}) <button data-g="${q.i}">Go to question</button><div style="margin:8px 0">${img(q.question)}</div>`+(q.nat?'':[1,2,3,4].map(k=>`<div class="op" style="cursor:default"><b>(${L[k-1]})</b><div>${img(q['option'+k])}</div></div>`).join(''))+'</div>').join(''),1);
 $('bxc').onclick=e=>{const g=e.target.dataset.g;if(g!==undefined){$('md').hidden=true;go(+g);$('pal').classList.remove('open')}}};
+function pdf(){$('pp').innerHTML=`<h2>${T}</h2><p>Questions: ${N} | Total marks: ${TOT} | Time: ${DUR/60} min</p>`+Q.map(q=>`<div class="pq"><b>Q${q.i+1}.</b> [${q.nat?'NAT':'MCQ'} | ${q.m} mark | Negative: ${q.nt}]<div>${img(q.question)}</div>`+(q.nat?'':[1,2,3,4].map(k=>`<div class="po"><b>(${L[k-1]})</b><div>${img(q['option'+k])}</div></div>`).join(''))+'</div>').join('');document.body.classList.add('pp');
+Promise.all([...$('pp').querySelectorAll('img')].map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r}))).then(()=>setTimeout(print,200))}
+window.onafterprint=()=>document.body.classList.remove('pp');$('bpdf').onclick=pdf;
 $('bi').onclick=()=>mod('<h3>Instructions</h3>'+INS);
 function ev(s){try{const k=deg?Math.PI/180:1;s=s.replace(/π/g,'(3.141592653589793)').replace(/sqrt\(/g,'R(').replace(/sin\(/g,'S(').replace(/cos\(/g,'C(').replace(/tan\(/g,'T(').replace(/log\(/g,'L(').replace(/ln\(/g,'N(').replace(/\^/g,'**');
 if(/[^\d+\-*/().SCTLNR\s]/.test(s))return'Err';return String(+new Function('S','C','T','L','N','R','return '+s)(x=>Math.sin(x*k),x=>Math.cos(x*k),x=>Math.tan(x*k),Math.log10,Math.log,Math.sqrt).toPrecision(12))}catch(e){return'Err'}}
@@ -105,7 +110,7 @@ let h=`<div class="rv ${c===null?'':c?'ok':'no'}"><b>Q${q.i+1}</b> (${q.nat?'NAT
 if(q.nat)h+=`<p>Your answer: <b>${a===undefined?'-':a}</b> | Correct answer: <b>${q.option1}</b></p>`;
 else for(let k=1;k<=4;k++)h+=`<div class="op ${k==q.answer?'ok':a==k?'no':''}" style="cursor:default"><b>${k==q.answer?'✓':a==k?'✗':''} (${L[k-1]})</b><div>${img(q['option'+k])}</div></div>`;
 if((q.solution_text||'').trim())h+=`<details open><summary><b>Solution</b></summary>${img(q.solution_text)}</details>`;return h+'</div>'}).join('');
-$('res').innerHTML=`<div class="sc"><h1>${+sc.toFixed(2)} / ${TOT}</h1>${G?`<p>${SEC[0]}: ${+ss[0].toFixed(2)} | ${SEC[1]}: ${+ss[1].toFixed(2)}</p>`:''}<p>Correct ${ok} · Wrong ${bad} · Not attempted ${sk}</p></div><p style="margin:10px 0"><button class="pr" onclick="if(confirm('Restart the exam?'))location.reload()">Restart</button> <button onclick="print()">Print</button></p>`+rows}
+$('res').innerHTML=`<div class="sc"><h1>${+sc.toFixed(2)} / ${TOT}</h1>${G?`<p>${SEC[0]}: ${+ss[0].toFixed(2)} | ${SEC[1]}: ${+ss[1].toFixed(2)}</p>`:''}<p>Correct ${ok} · Wrong ${bad} · Not attempted ${sk}</p></div><p style="margin:10px 0"><button class="pr" onclick="if(confirm('Restart the exam?'))location.reload()">Restart</button> <button onclick="print()">Download PDF (answers + solutions)</button></p>`+rows}
 $('t0').textContent=T;$('ins').innerHTML=INS;$('agree').onchange=e=>$('go').disabled=!e.target.checked;$('go').onclick=()=>begin(false);
 const dkSet=on=>{document.body.classList.toggle('dk',on);try{localStorage.setItem('gate_dk',on?1:0)}catch(e){}};
 document.querySelectorAll('.dkb').forEach(b=>b.onclick=()=>dkSet(!document.body.classList.contains('dk')));
