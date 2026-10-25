@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>/*TITLE*/</title>
+<style>
+*{box-sizing:border-box;margin:0}body{font:14px/1.5 Arial,sans-serif;background:#eef1f5;color:#222}
+button{cursor:pointer;font:inherit;border:1px solid #aaa;background:#fff;border-radius:4px;padding:8px 12px}
+button:disabled{opacity:.4}.pr{background:#2a5d9f;color:#fff;border-color:#2a5d9f}.mr{background:#7e57c2;color:#fff;border-color:#7e57c2}.gr{background:#2e9e4f;color:#fff;border-color:#2e9e4f}
+[hidden]{display:none!important}img{max-width:100%}
+.hd{background:#2a5d9f;color:#fff;display:flex;gap:10px;align-items:center;padding:8px 12px;flex-wrap:wrap}.hd #ttl{flex:1;font-size:15px;min-width:150px}
+.tm{background:#fff;color:#c00;padding:3px 10px;border-radius:4px;font-weight:700}
+.secs{background:#fff;border-bottom:2px solid #2a5d9f;display:flex;overflow-x:auto}.secs button{border:0;border-radius:0;white-space:nowrap}.secs .on{background:#2a5d9f;color:#fff}
+#app{display:flex;flex-direction:column;height:100vh}main{display:flex;flex:1;min-height:0}#qa{flex:1;display:flex;flex-direction:column;min-width:0;background:#fff}
+.qh{padding:8px 12px;border-bottom:1px solid #ccc;background:#f7f7f7;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+#qb{flex:1;overflow:auto;padding:14px}.hdg{background:#f1f3f6;border-left:4px solid #2a5d9f;padding:10px;margin-bottom:12px;overflow-x:auto}
+.op{display:flex;gap:10px;align-items:center;border:1px solid #ccc;border-radius:6px;padding:8px 10px;margin:8px 0;cursor:pointer}.op.s{border-color:#2a5d9f;background:#e8f0fb}
+.ft{padding:8px;border-top:1px solid #ccc;display:flex;gap:6px;flex-wrap:wrap;background:#f7f7f7}
+#pal{width:290px;background:#e3ecf7;padding:10px;overflow:auto;border-left:1px solid #99b}
+.lg{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;margin-bottom:10px}.lg div{display:flex;gap:6px;align-items:center}
+.b{width:36px;height:36px;border-radius:6px;padding:0;color:#fff;border:0;position:relative;font-weight:700}
+.nv{background:#aaa}.na{background:#e5533d}.a{background:#2e9e4f}.m{background:#7e57c2;border-radius:50%}.am{background:#7e57c2;border-radius:50%}
+.am::after{content:"";position:absolute;right:0;bottom:0;width:11px;height:11px;border-radius:50%;background:#2e9e4f;border:2px solid #fff}
+.bx.w{max-width:900px}.ld{color:#888;padding:20px;text-align:center}.cur{outline:3px solid #000}.gd{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+#mob,#bx{display:none}.md{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20;display:flex;align-items:center;justify-content:center;padding:10px}
+.bx{background:#fff;border-radius:8px;padding:16px;max-width:560px;width:100%;max-height:92vh;overflow:auto}
+table{border-collapse:collapse;width:100%;margin:10px 0}td,th{border:1px solid #bbb;padding:5px;text-align:center}
+.kp{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-width:260px;margin-top:10px}.kp button{padding:12px 0}
+#nat{font-size:20px;padding:8px;width:260px;max-width:100%;border:2px solid #2a5d9f;border-radius:6px}
+.rv{background:#fff;border:1px solid #ccc;border-radius:8px;padding:12px;margin:10px 0}.ok{background:#d4edda;border-color:#2e9e4f}.no{background:#f8d7da;border-color:#c33}
+.wrap{max-width:900px;margin:0 auto;padding:12px}.sc{background:#2a5d9f;color:#fff;border-radius:10px;padding:20px;text-align:center}
+@media(max-width:800px){#mob,#bx{display:block}#pal{position:fixed;right:0;top:0;bottom:0;z-index:10;transform:translateX(100%);transition:.2s}#pal.open{transform:none}}
+</style></head><body>
+<div id="start" class="wrap"><div class="rv"><h2 id="t0"></h2><h3 style="margin-top:10px">Instructions</h3><div id="ins"></div>
+<label style="display:block;margin:12px 0"><input type="checkbox" id="agree"> I have read and understood the instructions.</label>
+<button class="pr" id="go" disabled>I am ready to begin</button></div></div>
+<div id="app" hidden>
+<div class="hd"><b id="ttl"></b><span>Candidate: <b>Student</b></span><span class="tm" id="tm">03:00:00</span><button id="mob">☰ Palette</button></div>
+<nav class="secs" id="secs"></nav>
+<main><section id="qa"><div class="qh"><b id="qn"></b><span id="qi"></span></div><div id="qb"></div>
+<div class="ft"><button id="bm" class="mr">Mark for Review &amp; Next</button><button id="bc">Clear Response</button><button id="bp">&lt; Previous</button><button id="bs" class="gr">Save &amp; Next</button></div></section>
+<aside id="pal"><div class="lg" id="lg"></div><b id="sn"></b><div class="gd" id="gd"></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><button id="bq">Question Paper</button><button id="bk">Calculator</button><button id="bi">Instructions</button><button id="bsub" class="pr">Submit</button><button id="bx">Close</button></div></aside></main></div>
+<div id="md" class="md" hidden><div class="bx" id="bxc"></div></div>
+<div id="res" class="wrap" hidden></div>
+<script>
+/*Q*/
+const $=i=>document.getElementById(i),T=document.title,KEY='gate_'+T,G=questions.length===65,SEC=G?['General Aptitude','Computer Science & IT']:['All Questions'];
+const Q=questions.map((q,i)=>{const nat=!q.option2&&!q.option3&&!q.option4,n=parseFloat(q.negative_marking)||0;
+return{...q,i,nat,neg:nat?0:n>.5?2/3:n>0?1/3:0,nt:nat?'None':n>.5?'2/3':n>0?'1/3':'None',m:n>.5?2:n>0?1:(parseFloat(q.positive_marking)||1),sec:G&&i>=10?1:0}});
+const N=Q.length,DUR=(N===65?180:N*3)*60,TOT=Q.reduce((s,q)=>s+q.m,0),L='ABCD';
+let S={cur:0,ans:{},vis:{},mk:{},end:0},sel='',tmr,deg=true,cx='';
+const img=v=>/^https?:/.test(v)?`<img src="${v}">`:v;
+const st=i=>{const a=S.ans[i]!==undefined,m=S.mk[i];return a&&m?'am':m?'m':a?'a':S.vis[i]?'na':'nv'};
+const INS=`<ul style="margin:8px 0 8px 18px"><li>Total duration: ${DUR/60} minutes. The clock is shown top right; the exam auto-submits at 00:00:00.</li><li>Total questions: ${N}, total marks: ${TOT}. ${G?`Sections: ${SEC[0]} (Q1-10) and ${SEC[1]} (Q11-${N}).`:''}</li><li>MCQ: choose one option. NAT: type the number using the on-screen keypad.</li><li>MCQ wrong answer: negative marking 1/3 for 1-mark and 2/3 for 2-mark questions. No negative marking for NAT / no-negative questions.</li><li>An answer counts only after you press <b>Save &amp; Next</b> or <b>Mark for Review &amp; Next</b>.</li><li>A question marked for review that is also answered will be evaluated.</li></ul>
+<div class="lg"><div><button class="b nv">1</button>Not Visited</div><div><button class="b na">2</button>Not Answered</div><div><button class="b a">3</button>Answered</div><div><button class="b m">4</button>Marked for Review</div><div><button class="b am">5</button>Answered &amp; Marked</div></div>`;
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+function begin(resume){$('start').hidden=true;$('app').hidden=false;if(!resume)S.end=Date.now()+DUR*1000;
+$('ttl').textContent=T;$('secs').innerHTML=SEC.map((s,k)=>`<button data-k="${k}">${s}</button>`).join('');
+$('lg').innerHTML=[['nv','Not Visited'],['na','Not Answered'],['a','Answered'],['m','Marked for Review'],['am','Answered & Marked']].map(x=>`<div><button class="b ${x[0]}" id="c_${x[0]}">0</button>${x[1]}</div>`).join('');
+$('gd').innerHTML=Q.map(q=>`<button class="b" data-i="${q.i}">${q.i+1}</button>`).join('');
+tick();tmr=setInterval(tick,1000);go(S.cur)}
+function tick(){const r=Math.max(0,Math.round((S.end-Date.now())/1000)),p=n=>String(n).padStart(2,'0');
+$('tm').textContent=`${p(r/3600|0)}:${p(r%3600/60|0)}:${p(r%60)}`;if(r<=300)$('tm').style.background='#fdd';if(r<=0)finish()}
+function go(i){S.cur=i;S.vis[i]=1;const q=Q[i];sel=S.ans[i]!==undefined?S.ans[i]:'';
+document.querySelectorAll('.secs button').forEach(b=>b.classList.toggle('on',+b.dataset.k===q.sec));
+$('qn').textContent='Question No. '+(i+1);$('qi').textContent=`Type: ${q.nat?'NAT':'MCQ'} | Marks: ${q.m} | Negative: ${q.nt}`;
+let h=(q.question_heading||'').trim()?`<div class="hdg">${q.question_heading}</div>`:'';
+h+=`<div>${img(q.question)}</div>`;
+if(q.nat)h+=`<p style="margin-top:14px"><b>Answer (numerical):</b></p><input id="nat" readonly value="${sel}"><div class="kp">${'789⌫456C123-0.'.split('').map(k=>`<button data-k="${k}">${k}</button>`).join('')}</div>`;
+else for(let k=1;k<=4;k++)h+=`<label class="op${sel==k?' s':''}" data-o="${k}"><input type="radio" name="o" ${sel==k?'checked':''}><b>(${L[k-1]})</b><div>${img(q['option'+k])}</div></label>`;
+$('qb').innerHTML='<div class="ld">Loading...</div>';$('qb').scrollTop=0;requestAnimationFrame(()=>{$('qb').innerHTML=h;$('qb').scrollTop=0});$('bp').disabled=i===0;upd();save()}
+function upd(){const c={nv:0,na:0,a:0,m:0,am:0};
+document.querySelectorAll('#gd .b').forEach(b=>{const i=+b.dataset.i,s=st(i);c[s]++;b.className='b '+s+(i===S.cur?' cur':'')});
+for(const k in c)$('c_'+k).textContent=c[k];$('sn').textContent='Section: '+SEC[Q[S.cur].sec]}
+function commit(){const i=S.cur;if(sel!=='')S.ans[i]=sel;else delete S.ans[i]}
+const nxt=()=>go(Math.min(N-1,S.cur+1));
+$('bs').onclick=()=>{commit();delete S.mk[S.cur];nxt()};
+$('bm').onclick=()=>{commit();S.mk[S.cur]=1;nxt()};
+$('bc').onclick=()=>{delete S.ans[S.cur];sel='';go(S.cur)};
+$('bp').onclick=()=>go(S.cur-1);
+$('gd').onclick=e=>{const i=e.target.dataset.i;if(i!==undefined){go(+i);$('pal').classList.remove('open')}};
+$('secs').onclick=e=>{const k=e.target.dataset.k;if(k!==undefined)go(k==0?0:10)};
+$('mob').onclick=()=>$('pal').classList.add('open');$('bx').onclick=()=>$('pal').classList.remove('open');
+$('qb').onclick=e=>{const o=e.target.closest('.op'),k=e.target.dataset.k;
+if(o){sel=o.dataset.o;document.querySelectorAll('.op').forEach(x=>x.classList.toggle('s',x===o));o.querySelector('input').checked=true}
+else if(k!==undefined&&Q[S.cur].nat){if(k==='⌫')sel=sel.slice(0,-1);else if(k==='C')sel='';else if(k==='-'){sel=sel[0]==='-'?sel.slice(1):'-'+sel}else if(k!=='.'||!sel.includes('.'))sel+=k;$('nat').value=sel}};
+function mod(h,w){$('bxc').className='bx'+(w?' w':'');$('bxc').innerHTML=h+'<p style="margin-top:12px"><button onclick="$(\'md\').hidden=true">Close</button></p>';$('md').hidden=false}
+$('bq').onclick=()=>{mod('<h3>Question Paper</h3>'+Q.map(q=>(q.i==0||(G&&q.i==10)?`<h3 style="background:#2a5d9f;color:#fff;padding:6px">${SEC[q.sec]}</h3>`:'')+`<div class="rv"><b>Q${q.i+1}</b> (${q.nat?'NAT':'MCQ'}, ${q.m} mark, Negative: ${q.nt}) <button data-g="${q.i}">Go to question</button><div style="margin:8px 0">${img(q.question)}</div>`+(q.nat?'':[1,2,3,4].map(k=>`<div class="op" style="cursor:default"><b>(${L[k-1]})</b><div>${img(q['option'+k])}</div></div>`).join(''))+'</div>').join(''),1);
+$('bxc').onclick=e=>{const g=e.target.dataset.g;if(g!==undefined){$('md').hidden=true;go(+g);$('pal').classList.remove('open')}}};
+$('bi').onclick=()=>mod('<h3>Instructions</h3>'+INS);
+function ev(s){try{const k=deg?Math.PI/180:1;s=s.replace(/π/g,'(3.141592653589793)').replace(/sqrt\(/g,'R(').replace(/sin\(/g,'S(').replace(/cos\(/g,'C(').replace(/tan\(/g,'T(').replace(/log\(/g,'L(').replace(/ln\(/g,'N(').replace(/\^/g,'**');
+if(/[^\d+\-*/().SCTLNR\s]/.test(s))return'Err';return String(+new Function('S','C','T','L','N','R','return '+s)(x=>Math.sin(x*k),x=>Math.cos(x*k),x=>Math.tan(x*k),Math.log10,Math.log,Math.sqrt).toPrecision(12))}catch(e){return'Err'}}
+$('bk').onclick=()=>{mod('<h3>Scientific Calculator</h3><input id="cd" readonly style="width:100%;font-size:20px;padding:8px;text-align:right"><div class="kp" style="max-width:100%;grid-template-columns:repeat(5,1fr)" id="ck">'+['sin(','cos(','tan(','log(','ln(','sqrt(','^','π','(',')','7','8','9','/','C','4','5','6','*','⌫','1','2','3','-','=','0','.','+','Deg'].map(k=>`<button>${k}</button>`).join('')+'</div>');cx='';
+$('ck').onclick=e=>{const k=e.target.textContent;if(e.target.tagName!=='BUTTON')return;if(k==='C')cx='';else if(k==='⌫')cx=cx.replace(/(sin\(|cos\(|tan\(|log\(|ln\(|sqrt\(|.)$/,'');else if(k==='='){cx=ev(cx);if(cx==='Err')setTimeout(()=>{cx='';$('cd').value=''},700)}else if(k==='Deg'||k==='Rad'){deg=!deg;e.target.textContent=deg?'Deg':'Rad'}else cx+=k;$('cd').value=cx}};
+function cnt(){return SEC.map((s,k)=>{const r={n:0,a:0,na:0,m:0,am:0,nv:0};Q.filter(q=>q.sec===k).forEach(q=>{r.n++;r[st(q.i)]++;});return r})}
+$('bsub').onclick=()=>{commit();upd();const c=cnt();mod('<h3>Exam Summary</h3><table><tr><th>Section</th><th>Questions</th><th>Answered</th><th>Not Answered</th><th>Marked</th><th>Ans &amp; Marked</th><th>Not Visited</th></tr>'+c.map((r,k)=>`<tr><td>${SEC[k]}</td><td>${r.n}</td><td>${r.a}</td><td>${r.na}</td><td>${r.m}</td><td>${r.am}</td><td>${r.nv}</td></tr>`).join('')+'</table><p>Are you sure you want to submit? You cannot make changes after submitting.</p><p style="margin-top:10px"><button class="pr" onclick="finish()">Yes, Submit</button></p>')};
+function correct(q,a){if(a===undefined)return null;if(q.nat){const x=parseFloat(a),y=parseFloat(q.option1);return a===q.option1||Math.abs(x-y)<=1e-6*(1+Math.abs(y))}return a==q.answer}
+function finish(){clearInterval(tmr);try{localStorage.removeItem(KEY)}catch(e){}$('md').hidden=true;$('app').hidden=true;$('res').hidden=false;
+let sc=0,ok=0,bad=0,sk=0,ss=[0,0];const rows=Q.map(q=>{const a=S.ans[q.i],c=correct(q,a);let d=0;if(c===null){sk++}else if(c){ok++;d=q.m}else{bad++;d=-q.neg}sc+=d;ss[q.sec]+=d;
+let h=`<div class="rv ${c===null?'':c?'ok':'no'}"><b>Q${q.i+1}</b> (${q.nat?'NAT':'MCQ'}, ${q.m} mark) — ${c===null?'Not attempted':c?'Correct':'Wrong'} (${d>0?'+':''}${+d.toFixed(2)})<div style="margin:8px 0">${img(q.question)}</div>`;
+if(q.nat)h+=`<p>Your answer: <b>${a===undefined?'-':a}</b> | Correct answer: <b>${q.option1}</b></p>`;
+else for(let k=1;k<=4;k++)h+=`<div class="op ${k==q.answer?'ok':a==k?'no':''}" style="cursor:default"><b>${k==q.answer?'✓':a==k?'✗':''} (${L[k-1]})</b><div>${img(q['option'+k])}</div></div>`;
+if((q.solution_text||'').trim())h+=`<details open><summary><b>Solution</b></summary>${img(q.solution_text)}</details>`;return h+'</div>'}).join('');
+$('res').innerHTML=`<div class="sc"><h1>${+sc.toFixed(2)} / ${TOT}</h1>${G?`<p>${SEC[0]}: ${+ss[0].toFixed(2)} | ${SEC[1]}: ${+ss[1].toFixed(2)}</p>`:''}<p>Correct ${ok} · Wrong ${bad} · Not attempted ${sk}</p></div><p style="margin:10px 0"><button class="pr" onclick="if(confirm('Restart the exam?'))location.reload()">Restart</button> <button onclick="print()">Print</button></p>`+rows}
+$('t0').textContent=T;$('ins').innerHTML=INS;$('agree').onchange=e=>$('go').disabled=!e.target.checked;$('go').onclick=()=>begin(false);
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.end>Date.now()){S=s;begin(true)}}catch(e){}
+</script></body></html>
