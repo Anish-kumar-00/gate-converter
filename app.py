@@ -14,6 +14,7 @@ def convert(src):
     t = re.search(r"<title>(.*?)</title>", src, re.S)
     return TPL.replace("/*Q*/", m.group(0).rstrip()).replace("/*TITLE*/", t.group(1) if t else "GATE Test")
 
+
 def caption(cap, out):
     if cap:
         return cap.replace("#", "")[:1024]
@@ -51,7 +52,16 @@ def start_bot():
         bot.send_document(m.chat.id, f, caption=caption(m.caption, out))
 
     import threading
-    threading.Thread(target=lambda: bot.infinity_polling(skip_pending=True), daemon=True).start()
+
+    def run():
+        import time
+        while True:
+            try:
+                bot.infinity_polling(timeout=30, long_polling_timeout=30)
+            except Exception:
+                time.sleep(5)
+
+    threading.Thread(target=run, daemon=True).start()
     return bot
 
 
