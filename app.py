@@ -16,11 +16,19 @@ def convert(src):
 
 
 def caption(cap, out):
-    if cap:
-        return cap.replace("#", "")[:1024]
-    t = re.search(r"<title>(.*?)</title>", out, re.S).group(1).strip()
+    cap = (cap or "").replace("#", "")
+
+    def g(p):
+        m = re.search(p, cap, re.M | re.I)
+        return m.group(0).strip() if m else None
+
     n = out.count('"sr_no"')
-    return f"✨ {t} ✨\n\nOPEN IN YOUR BROWSER🌐  BEST IN CHROME\nQUESTIONS: {n}\nTIME: {180 if n == 65 else n * 3} MINUTES ⏱️"
+    t = re.search(r"<title>(.*?)</title>", out, re.S).group(1).strip()
+    name = g(r"^.*test name:.*$")
+    head = g(r"^.*✨.*✨.*$") or f"✨ {t} ✨"
+    qs = g(r"^\s*QUESTIONS:.*$") or f"QUESTIONS: {n}"
+    tm = g(r"^\s*TIME:.*$") or f"TIME: {180 if n == 65 else n * 3} MINUTES ⏱️"
+    return (name + "\n\n" if name else "") + head + "\n" + qs + "\n" + tm
 
 
 @st.cache_resource
