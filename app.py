@@ -31,6 +31,18 @@ def caption(cap, out):
     return (name + "\n\n" if name else "") + head + "\n" + qs + "\n" + tm
 
 
+def fname(cap, out, fn):
+    m = re.search(r"test name:\s*\(?(.*?)\)?\s*$", (cap or "").replace("#", ""), re.M | re.I)
+    if m and m.group(1).strip():
+        n = m.group(1)
+    else:
+        t = re.search(r"<title>(.*?)</title>", out, re.S).group(1)
+        n = re.sub(r"^\s*\d+\.\)\s*|\s*-\s*Hindi\s*$", "", t.strip())
+    n = re.sub(r'[\\/:*?"<>|]+', " ", n)
+    n = re.sub(r"\s+", " ", n).strip()
+    return (n or re.sub(r"\.html?$", "", fn, flags=re.I)) + ".html"
+
+
 @st.cache_resource
 def start_bot():
     bot = telebot.TeleBot(st.secrets["BOT_TOKEN"], threaded=True)
@@ -56,7 +68,7 @@ def start_bot():
             bot.reply_to(m, "Questions data nahi mila: " + fn)
             return
         f = io.BytesIO(out.encode("utf8"))
-        f.name = re.sub(r"\.html?$", "", fn, flags=re.I) + "_GATE.html"
+        f.name = fname(m.caption, out, fn)
         bot.send_document(m.chat.id, f, caption=caption(m.caption, out))
 
     import threading
