@@ -35,29 +35,37 @@ table{border-collapse:collapse;width:100%;margin:10px 0}td,th{border:1px solid #
 .rv{background:#fff;border:1px solid #ccc;border-radius:8px;padding:12px;margin:10px 0}.ok{background:#d4edda;border-color:#2e9e4f}.no{background:#f8d7da;border-color:#c33}
 .wrap{max-width:900px;margin:0 auto;padding:12px}.sc{background:#2a5d9f;color:#fff;border-radius:10px;padding:20px;text-align:center}
 @media(max-width:800px){#mob,#bx{display:block}#pal{position:fixed;right:0;top:0;bottom:0;z-index:10;transform:translateX(100%);transition:.2s}#pal.open{transform:none}}
+body.dk{background:#12151c;color:#e6e6e6}.dk #qa,.dk .rv,.dk .bx,.dk .secs{background:#1b1f29}.dk .qh,.dk .ft{background:#232834;border-color:#3a4150}
+.dk .op{border-color:#3a4150}.dk .op.s{background:#1f3556}.dk #pal{background:#1a2233;border-color:#3a4150}.dk .hdg{background:#232834}.dk .lg,.dk td,.dk th{border-color:#444}
+.dk button:not(.pr):not(.mr):not(.gr):not(.b):not(.on){background:#2a303d;color:#eee;border-color:#444}.dk .secs button{background:#1b1f29;color:#ddd}.dk .secs .on{background:#2a5d9f;color:#fff}
+.dk input{background:#232834;color:#eee}.dk .ok{background:#16351f}.dk .no{background:#3b1a1f}.dk img{background:#fff;border-radius:4px}
+#pp{display:none}body.pp{background:#fff;color:#000}body.pp>*:not(#pp){display:none!important}body.pp #pp{display:block;padding:10px}.pq{break-inside:avoid;margin:12px 0;padding-bottom:8px;border-bottom:1px solid #999}.po{margin:6px 0;display:flex;gap:8px;align-items:flex-start}
 </style></head><body>
-<div id="start" class="wrap"><div class="rv"><h2 id="t0"></h2><h3 style="margin-top:10px">Instructions</h3><div id="ins"></div>
+<div id="start" class="wrap"><div class="rv"><button class="dkb" style="float:right">🌙 Dark</button><h2 id="t0"></h2><h3 style="margin-top:10px">Instructions</h3><div id="ins"></div>
 <label style="display:block;margin:12px 0"><input type="checkbox" id="agree"> I have read and understood the instructions.</label>
 <button class="pr" id="go" disabled>I am ready to begin</button></div></div>
 <div id="app" hidden>
-<div class="hd"><b id="ttl"></b><span>Candidate: <b>Student</b></span><span class="tm" id="tm">03:00:00</span><button id="mob">☰ Palette</button></div>
+<div class="hd"><b id="ttl"></b><span>Candidate: <b>Student</b></span><span class="tm" id="tm">03:00:00</span><button class="dkb">🌙 Dark</button><button id="mob">☰ Palette</button></div>
 <nav class="secs" id="secs"></nav>
 <main><section id="qa"><div class="qh"><b id="qn"></b><span id="qi"></span></div><div id="qb"></div>
 <div class="ft"><button id="bm" class="mr">Mark for Review &amp; Next</button><button id="bc">Clear Response</button><button id="bp">&lt; Previous</button><button id="bs" class="gr">Save &amp; Next</button></div></section>
 <aside id="pal"><div class="lg" id="lg"></div><b id="sn"></b><div class="gd" id="gd"></div>
-<div style="display:flex;gap:6px;flex-wrap:wrap"><button id="bq">Question Paper</button><button id="bk">Calculator</button><button id="bi">Instructions</button><button id="bsub" class="pr">Submit</button><button id="bx">Close</button></div></aside></main></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><button id="bq">Question Paper</button><button id="bpdf">Download PDF</button><button id="bk">Calculator</button><button id="bi">Instructions</button><button id="bsub" class="pr">Submit</button><button id="bx">Close</button></div></aside></main></div>
 <div id="md" class="md" hidden><div class="bx" id="bxc"></div></div>
 <div id="res" class="wrap" hidden></div>
+<div id="pp"></div>
 <script>
 /*Q*/
 const $=i=>document.getElementById(i),T=document.title,KEY='gate_'+T,G=questions.length===65,SEC=G?['General Aptitude','Computer Science & IT']:['All Questions'];
-const Q=questions.map((q,i)=>{const nat=!q.option2&&!q.option3&&!q.option4,n=parseFloat(q.negative_marking)||0;
-return{...q,i,nat,neg:nat?0:n>.5?2/3:n>0?1/3:0,nt:nat?'None':n>.5?'2/3':n>0?'1/3':'None',m:n>.5?2:n>0?1:(parseFloat(q.positive_marking)||1),sec:G&&i>=10?1:0}});
+const ansSet=q=>{let a=q.answer;if(Array.isArray(a))a=a.join(',');a=String(a==null?'':a).toUpperCase();const r=[];(a.match(/[1-4A-D]/g)||[]).forEach(x=>{const k='ABCD'.indexOf(x),v=k>=0?k+1:+x;if(!r.includes(v))r.push(v)});return r.sort()};
+const Q=questions.map((q,i)=>{const nat=!q.option2&&!q.option3&&!q.option4,n=parseFloat(q.negative_marking)||0,aset=ansSet(q),msq=!nat&&(aset.length>1||/msq|multiple\s*(select|correct|answer)/i.test([q.question_type,q.type,q.qtype,q.question_category].join(' ')));
+return{...q,i,nat,msq,aset,neg:nat||msq?0:n>.5?2/3:n>0?1/3:0,nt:nat||msq?'None':n>.5?'2/3':n>0?'1/3':'None',m:n>.5?2:n>0?1:(parseFloat(q.positive_marking)||1),sec:G&&i>=10?1:0}});
 const N=Q.length,DUR=(N===65?180:N*3)*60,TOT=Q.reduce((s,q)=>s+q.m,0),L='ABCD';
 let S={cur:0,ans:{},vis:{},mk:{},end:0},sel='',tmr,deg=true,cx='';
+const has=(q,k)=>q.msq?String(sel).split(',').includes(String(k)):sel==k,isC=(q,k)=>q.msq?q.aset.includes(k):k==q.answer,isP=(q,a,k)=>q.msq?String(a).split(',').includes(String(k)):a==k;
 const img=v=>/^https?:/.test(v)?`<img src="${v}">`:v;
 const st=i=>{const a=S.ans[i]!==undefined,m=S.mk[i];return a&&m?'am':m?'m':a?'a':S.vis[i]?'na':'nv'};
-const INS=`<ul style="margin:8px 0 8px 18px"><li>Total duration: ${DUR/60} minutes. The clock is shown top right; the exam auto-submits at 00:00:00.</li><li>Total questions: ${N}, total marks: ${TOT}. ${G?`Sections: ${SEC[0]} (Q1-10) and ${SEC[1]} (Q11-${N}).`:''}</li><li>MCQ: choose one option. NAT: type the number using the on-screen keypad.</li><li>MCQ wrong answer: negative marking 1/3 for 1-mark and 2/3 for 2-mark questions. No negative marking for NAT / no-negative questions.</li><li>An answer counts only after you press <b>Save &amp; Next</b> or <b>Mark for Review &amp; Next</b>.</li><li>A question marked for review that is also answered will be evaluated.</li></ul>
+const INS=`<ul style="margin:8px 0 8px 18px"><li>Total duration: ${DUR/60} minutes. The clock is shown top right; the exam auto-submits at 00:00:00.</li><li>Total questions: ${N}, total marks: ${TOT}. ${G?`Sections: ${SEC[0]} (Q1-10) and ${SEC[1]} (Q11-${N}).`:''}</li><li>MCQ: choose one option. MSQ: tick one or more options; marks are given only if all correct options (and no wrong one) are selected, with no negative marking. NAT: type the number using the on-screen keypad.</li><li>MCQ wrong answer: negative marking 1/3 for 1-mark and 2/3 for 2-mark questions. No negative marking for NAT / no-negative questions.</li><li>Your answer is saved as soon as you select it. Use <b>Save &amp; Next</b> to move ahead, or <b>Mark for Review &amp; Next</b> to flag the question.</li><li>A question marked for review that is also answered will be evaluated.</li></ul>
 <div class="lg"><div><button class="b nv">1</button>Not Visited</div><div><button class="b na">2</button>Not Answered</div><div><button class="b a">3</button>Answered</div><div><button class="b m">4</button>Marked for Review</div><div><button class="b am">5</button>Answered &amp; Marked</div></div>`;
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 function begin(resume){$('start').hidden=true;$('app').hidden=false;if(!resume)S.end=Date.now()+DUR*1000;
@@ -69,11 +77,11 @@ function tick(){const r=Math.max(0,Math.round((S.end-Date.now())/1000)),p=n=>Str
 $('tm').textContent=`${p(r/3600|0)}:${p(r%3600/60|0)}:${p(r%60)}`;if(r<=300)$('tm').style.background='#fdd';if(r<=0)finish()}
 function go(i){S.cur=i;S.vis[i]=1;const q=Q[i];sel=S.ans[i]!==undefined?S.ans[i]:'';
 document.querySelectorAll('.secs button').forEach(b=>b.classList.toggle('on',+b.dataset.k===q.sec));
-$('qn').textContent='Question No. '+(i+1);$('qi').textContent=`Type: ${q.nat?'NAT':'MCQ'} | Marks: ${q.m} | Negative: ${q.nt}`;
+$('qn').textContent='Question No. '+(i+1);$('qi').textContent=`Type: ${q.nat?'NAT':q.msq?'MSQ':'MCQ'} | Marks: ${q.m} | Negative: ${q.nt}`;
 let h=(q.question_heading||'').trim()?`<div class="hdg">${q.question_heading}</div>`:'';
 h+=`<div>${img(q.question)}</div>`;
 if(q.nat)h+=`<p style="margin-top:14px"><b>Answer (numerical):</b></p><input id="nat" readonly value="${sel}"><div class="kp">${'789⌫456C123-0.'.split('').map(k=>`<button data-k="${k}">${k}</button>`).join('')}</div>`;
-else for(let k=1;k<=4;k++)h+=`<label class="op${sel==k?' s':''}" data-o="${k}"><input type="radio" name="o" ${sel==k?'checked':''}><b>(${L[k-1]})</b><div>${img(q['option'+k])}</div></label>`;
+else{if(q.msq)h+='<p style="margin:10px 0"><i>This is a Multiple Select Question (MSQ): one or more options may be correct. Tick all correct options.</i></p>';for(let k=1;k<=4;k++)h+=`<label class="op${has(q,k)?' s':''}" data-o="${k}"><input type="${q.msq?'checkbox':'radio'}" name="o" style="pointer-events:none" ${has(q,k)?'checked':''}><b>(${L[k-1]})</b><div>${img(q['option'+k])}</div></label>`}
 $('qb').innerHTML='<div class="ld">Loading...</div>';$('qb').scrollTop=0;requestAnimationFrame(()=>{$('qb').innerHTML=h;$('qb').scrollTop=0});$('bp').disabled=i===0;upd();save()}
 function upd(){const c={nv:0,na:0,a:0,m:0,am:0};
 document.querySelectorAll('#gd .b').forEach(b=>{const i=+b.dataset.i,s=st(i);c[s]++;b.className='b '+s+(i===S.cur?' cur':'')});
@@ -88,11 +96,17 @@ $('gd').onclick=e=>{const i=e.target.dataset.i;if(i!==undefined){go(+i);$('pal')
 $('secs').onclick=e=>{const k=e.target.dataset.k;if(k!==undefined)go(k==0?0:10)};
 $('mob').onclick=()=>$('pal').classList.add('open');$('bx').onclick=()=>$('pal').classList.remove('open');
 $('qb').onclick=e=>{const o=e.target.closest('.op'),k=e.target.dataset.k;
-if(o){sel=o.dataset.o;document.querySelectorAll('.op').forEach(x=>x.classList.toggle('s',x===o));o.querySelector('input').checked=true}
-else if(k!==undefined&&Q[S.cur].nat){if(k==='⌫')sel=sel.slice(0,-1);else if(k==='C')sel='';else if(k==='-'){sel=sel[0]==='-'?sel.slice(1):'-'+sel}else if(k!=='.'||!sel.includes('.'))sel+=k;$('nat').value=sel}};
+if(o){e.preventDefault();const q=Q[S.cur],v=o.dataset.o;
+if(q.msq){const a=sel?String(sel).split(','):[],ix=a.indexOf(v);if(ix>=0)a.splice(ix,1);else a.push(v);sel=a.sort().join(',');document.querySelectorAll('.op').forEach(x=>{const on=sel.split(',').includes(x.dataset.o);x.classList.toggle('s',on);x.querySelector('input').checked=on})}
+else{sel=v;document.querySelectorAll('.op').forEach(x=>x.classList.toggle('s',x===o));o.querySelector('input').checked=true}
+commit();upd();save()}
+else if(k!==undefined&&Q[S.cur].nat){if(k==='⌫')sel=sel.slice(0,-1);else if(k==='C')sel='';else if(k==='-'){sel=sel[0]==='-'?sel.slice(1):'-'+sel}else if(k!=='.'||!sel.includes('.'))sel+=k;$('nat').value=sel;commit();upd();save()}};
 function mod(h,w){$('bxc').className='bx'+(w?' w':'');$('bxc').innerHTML=h+'<p style="margin-top:12px"><button onclick="$(\'md\').hidden=true">Close</button></p>';$('md').hidden=false}
-$('bq').onclick=()=>{mod('<h3>Question Paper</h3>'+Q.map(q=>(q.i==0||(G&&q.i==10)?`<h3 style="background:#2a5d9f;color:#fff;padding:6px">${SEC[q.sec]}</h3>`:'')+`<div class="rv"><b>Q${q.i+1}</b> (${q.nat?'NAT':'MCQ'}, ${q.m} mark, Negative: ${q.nt}) <button data-g="${q.i}">Go to question</button><div style="margin:8px 0">${img(q.question)}</div>`+(q.nat?'':[1,2,3,4].map(k=>`<div class="op" style="cursor:default"><b>(${L[k-1]})</b><div>${img(q['option'+k])}</div></div>`).join(''))+'</div>').join(''),1);
+$('bq').onclick=()=>{mod('<h3>Question Paper</h3><button class="pr" onclick="pdf()">⬇ Download PDF</button>'+Q.map(q=>(q.i==0||(G&&q.i==10)?`<h3 style="background:#2a5d9f;color:#fff;padding:6px">${SEC[q.sec]}</h3>`:'')+`<div class="rv"><b>Q${q.i+1}</b> (${q.nat?'NAT':q.msq?'MSQ':'MCQ'}, ${q.m} mark, Negative: ${q.nt}) <button data-g="${q.i}">Go to question</button><div style="margin:8px 0">${img(q.question)}</div>`+(q.nat?'':[1,2,3,4].map(k=>`<div class="op" style="cursor:default"><b>(${L[k-1]})</b><div>${img(q['option'+k])}</div></div>`).join(''))+'</div>').join(''),1);
 $('bxc').onclick=e=>{const g=e.target.dataset.g;if(g!==undefined){$('md').hidden=true;go(+g);$('pal').classList.remove('open')}}};
+function pdf(){$('pp').innerHTML=`<h2>${T}</h2><p>Questions: ${N} | Total marks: ${TOT} | Time: ${DUR/60} min</p>`+Q.map(q=>`<div class="pq"><b>Q${q.i+1}.</b> [${q.nat?'NAT':q.msq?'MSQ':'MCQ'} | ${q.m} mark | Negative: ${q.nt}]<div>${img(q.question)}</div>`+(q.nat?'':[1,2,3,4].map(k=>`<div class="po"><b>(${L[k-1]})</b><div>${img(q['option'+k])}</div></div>`).join(''))+'</div>').join('');document.body.classList.add('pp');
+Promise.all([...$('pp').querySelectorAll('img')].map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r}))).then(()=>setTimeout(print,200))}
+window.onafterprint=()=>document.body.classList.remove('pp');$('bpdf').onclick=pdf;
 $('bi').onclick=()=>mod('<h3>Instructions</h3>'+INS);
 function ev(s){try{const k=deg?Math.PI/180:1;s=s.replace(/π/g,'(3.141592653589793)').replace(/sqrt\(/g,'R(').replace(/sin\(/g,'S(').replace(/cos\(/g,'C(').replace(/tan\(/g,'T(').replace(/log\(/g,'L(').replace(/ln\(/g,'N(').replace(/\^/g,'**');
 if(/[^\d+\-*/().SCTLNR\s]/.test(s))return'Err';return String(+new Function('S','C','T','L','N','R','return '+s)(x=>Math.sin(x*k),x=>Math.cos(x*k),x=>Math.tan(x*k),Math.log10,Math.log,Math.sqrt).toPrecision(12))}catch(e){return'Err'}}
@@ -100,18 +114,20 @@ $('bk').onclick=()=>{mod('<h3>Scientific Calculator</h3><input id="cd" readonly 
 $('ck').onclick=e=>{const k=e.target.textContent;if(e.target.tagName!=='BUTTON')return;if(k==='C')cx='';else if(k==='⌫')cx=cx.replace(/(sin\(|cos\(|tan\(|log\(|ln\(|sqrt\(|.)$/,'');else if(k==='='){cx=ev(cx);if(cx==='Err')setTimeout(()=>{cx='';$('cd').value=''},700)}else if(k==='Deg'||k==='Rad'){deg=!deg;e.target.textContent=deg?'Deg':'Rad'}else cx+=k;$('cd').value=cx}};
 function cnt(){return SEC.map((s,k)=>{const r={n:0,a:0,na:0,m:0,am:0,nv:0};Q.filter(q=>q.sec===k).forEach(q=>{r.n++;r[st(q.i)]++;});return r})}
 $('bsub').onclick=()=>{commit();upd();const c=cnt();mod('<h3>Exam Summary</h3><table><tr><th>Section</th><th>Questions</th><th>Answered</th><th>Not Answered</th><th>Marked</th><th>Ans &amp; Marked</th><th>Not Visited</th></tr>'+c.map((r,k)=>`<tr><td>${SEC[k]}</td><td>${r.n}</td><td>${r.a}</td><td>${r.na}</td><td>${r.m}</td><td>${r.am}</td><td>${r.nv}</td></tr>`).join('')+'</table><p>Are you sure you want to submit? You cannot make changes after submitting.</p><p style="margin-top:10px"><button class="pr" onclick="finish()">Yes, Submit</button></p>')};
-function correct(q,a){if(a===undefined)return null;if(q.nat){const x=parseFloat(a),y=parseFloat(q.option1);return a===q.option1||Math.abs(x-y)<=1e-6*(1+Math.abs(y))}return a==q.answer}
+function correct(q,a){if(a===undefined)return null;if(q.nat){const x=parseFloat(a),y=parseFloat(q.option1);return a===q.option1||Math.abs(x-y)<=1e-6*(1+Math.abs(y))}if(q.msq)return String(a)===q.aset.join(',');return a==q.answer}
 function finish(){clearInterval(tmr);try{localStorage.removeItem(KEY)}catch(e){}$('md').hidden=true;$('app').hidden=true;$('res').hidden=false;
 let sc=0,ok=0,bad=0,sk=0,ss=[0,0];const rows=Q.map(q=>{const a=S.ans[q.i],c=correct(q,a);let d=0;if(c===null){sk++}else if(c){ok++;d=q.m}else{bad++;d=-q.neg}sc+=d;ss[q.sec]+=d;
-let h=`<div class="rv ${c===null?'':c?'ok':'no'}"><b>Q${q.i+1}</b> (${q.nat?'NAT':'MCQ'}, ${q.m} mark) — ${c===null?'Not attempted':c?'Correct':'Wrong'} (${d>0?'+':''}${+d.toFixed(2)})<div style="margin:8px 0">${img(q.question)}</div>`;
+let h=`<div class="rv ${c===null?'':c?'ok':'no'}"><b>Q${q.i+1}</b> (${q.nat?'NAT':q.msq?'MSQ':'MCQ'}, ${q.m} mark) — ${c===null?'Not attempted':c?'Correct':'Wrong'} (${d>0?'+':''}${+d.toFixed(2)})<div style="margin:8px 0">${img(q.question)}</div>`;
 if(q.nat)h+=`<p>Your answer: <b>${a===undefined?'-':a}</b> | Correct answer: <b>${q.option1}</b></p>`;
-else for(let k=1;k<=4;k++)h+=`<div class="op ${k==q.answer?'ok':a==k?'no':''}" style="cursor:default"><b>${k==q.answer?'✓':a==k?'✗':''} (${L[k-1]})</b><div>${img(q['option'+k])}</div></div>`;
+else for(let k=1;k<=4;k++)h+=`<div class="op ${isC(q,k)?'ok':isP(q,a,k)?'no':''}" style="cursor:default"><b>${isC(q,k)?'✓':isP(q,a,k)?'✗':''} (${L[k-1]})${q.msq&&isP(q,a,k)?' ← your pick':''}</b><div>${img(q['option'+k])}</div></div>`;
 if((q.solution_text||'').trim())h+=`<details open><summary><b>Solution</b></summary>${img(q.solution_text)}</details>`;return h+'</div>'}).join('');
-$('res').innerHTML=`<div class="sc"><h1>${+sc.toFixed(2)} / ${TOT}</h1>${G?`<p>${SEC[0]}: ${+ss[0].toFixed(2)} | ${SEC[1]}: ${+ss[1].toFixed(2)}</p>`:''}<p>Correct ${ok} · Wrong ${bad} · Not attempted ${sk}</p></div><p style="margin:10px 0"><button class="pr" onclick="if(confirm('Restart the exam?'))location.reload()">Restart</button> <button onclick="print()">Print</button></p>`+rows}
+$('res').innerHTML=`<div class="sc"><h1>${+sc.toFixed(2)} / ${TOT}</h1>${G?`<p>${SEC[0]}: ${+ss[0].toFixed(2)} | ${SEC[1]}: ${+ss[1].toFixed(2)}</p>`:''}<p>Correct ${ok} · Wrong ${bad} · Not attempted ${sk}</p></div><p style="margin:10px 0"><button class="pr" onclick="if(confirm('Restart the exam?'))location.reload()">Restart</button> <button onclick="print()">Download PDF (answers + solutions)</button></p>`+rows}
 $('t0').textContent=T;$('ins').innerHTML=INS;$('agree').onchange=e=>$('go').disabled=!e.target.checked;$('go').onclick=()=>begin(false);
+const dkSet=on=>{document.body.classList.toggle('dk',on);try{localStorage.setItem('gate_dk',on?1:0)}catch(e){}};
+document.querySelectorAll('.dkb').forEach(b=>b.onclick=()=>dkSet(!document.body.classList.contains('dk')));
+try{if(localStorage.getItem('gate_dk')==='1')document.body.classList.add('dk')}catch(e){}
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.end>Date.now()){S=s;begin(true)}}catch(e){}
-<\/script></body></html>
-</script>
+<\/script></body></html></script>
 <script>
 const TPL=document.getElementById('tpl').textContent.replace(/<\\\/script>/g,'</script>'),$=i=>document.getElementById(i);let done=[];
 function conv(s){const m=s.match(/const questions = \[[\s\S]*?\];\n/);if(!m)return null;const t=(s.match(/<title>([\s\S]*?)<\/title>/)||[0,'GATE Test'])[1];return TPL.replace('/*Q*/',()=>m[0].trimEnd()).replace('/*TITLE*/',()=>t)}
